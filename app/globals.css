@@ -25,3 +25,7 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
   background-color: #028cd1;
 }
+
+.border-red-500{
+  border: 1px solid rgb(239 68 68 / var(--tw-border-opacity));
+}
