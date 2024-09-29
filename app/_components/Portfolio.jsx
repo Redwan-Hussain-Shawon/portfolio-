@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image';
-import React, { useRef } from 'react';
+import React from 'react';
 
 const Portfolio = () => {
   const data = [
@@ -32,16 +32,7 @@ const Portfolio = () => {
       image: 'https://s3.ali2bd.net/files/2023/11/26/1d6fd250-8d66-4532-ba2a-5d4875e4a197.jpeg'
     },
   ];
-
-  const imgRef = useRef([]); // Array to hold references to div elements
   
-  // Function to add 'opacity-100' class once the image has fully loaded
-  const thumbLoaded = (index) => {
-    if (imgRef.current[index]) {
-      imgRef.current[index].classList.add('opacity-100');
-      console.log(`Image ${index} loaded`);
-    }
-  };
 
   return (
     <div className='px-3 lg:px-6 py-24'>
@@ -58,15 +49,13 @@ const Portfolio = () => {
               <div
          
                 className={`bg-slate-200 h-[400px] rounded shadow-lg bg-no-repeat bg-center bg-cover`} // Transition for smooth opacity change
-                style={{ backgroundImage: `url('preloader-bg.png')` }} // Optional: Placeholder background
+                style={{ backgroundImage: `url('preloader-bg.png')` }} 
               >
                 <Image
-                       ref={(el) => (imgRef.current[index] = el)} 
                   src={item.image}
-                  className="object-cover h-full w-full rounded block opacity-0 "
+                  className="object-cover h-full w-full rounded block  "
                   width={400}
                   height={500}
-                  onLoadingComplete={() => thumbLoaded(index)} 
                 />
               </div>
             </div>
