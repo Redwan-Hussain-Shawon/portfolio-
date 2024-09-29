@@ -15,10 +15,12 @@ function Header() {
           <ul className='flex items-center gap-8 md:gap-2 h-full max-md:flex-col justify-center'>
             <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#home">Home</a></li>
             <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#about-me">About Me</a></li>
+            <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#services">Services</a></li>
+            <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#portfolio">Portfolio</a></li>
             <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#skills">Skills</a>
             </li> 
-        <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#portfolio">Portfolio</a></li>
-        <li><a onClick={()=>setMenuActive(false)} className=' hover:bg-[#1f2937] duration-200 hover:text-white text-slate-300 rounded-sm px-3 py-[10px] text-sm max-md:text-2xl font-medium' href="#services">Services</a></li>
+       
+        
         <a href="#contact">
         <button className=' text-white bg-primary hover:bg-[#037dba] duration-150 rounded px-3 py-[10px] text-sm max-md:text-2xl font-medium'>Contact Me</button>
         </a>

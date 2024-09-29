@@ -1,5 +1,9 @@
 'use client'
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import emailjs from '@emailjs/browser';
+import {toast } from 'react-toastify';
+
+
 
 const Contact = () => {
   const [authState,setAuthState] = useState({
@@ -14,52 +18,88 @@ const Contact = () => {
     number: '',
     service: '',
   });
+  const [loading,setIsLoading]= useState(false);
+  let isError = false;
+  const form = useRef();
   const handaleFrom = (e)=>{
     e.preventDefault();
+    setIsLoading(true);
     const {name,email,number,service} = authState;
 
-
     // name validate
-    if(name === ''){
-      setErrors((pre)=>({...pre,name:'name is empty'}))
-    }else if(name.trim().length<3){
-      setErrors((pre)=>({...pre,name:'name minmum 4 chracter'}))
-    }else{
-      setErrors((pre)=>({...pre,name:''}))
+    if (name === '') {
+      setErrors((pre) => ({ ...pre, name: 'Name cannot be empty' }));
+      isError = true;
+    } else if (name.trim().length < 3) {
+      setErrors((pre) => ({ ...pre, name: 'Name must be at least 3 characters' }));
+      isError = true;
+    } else {
+      setErrors((pre) => ({ ...pre, name: '' }));
+     isError = false;
+    }
+    
+    if (email === '') {
+      setErrors((pre) => ({ ...pre, email: 'Email cannot be empty' }));
+      isError = true;
+    } else if (!email.includes('@') || !email.includes('.com')) {
+      setErrors((pre) => ({ ...pre, email: 'Email must be a valid email address ' }));
+      isError = true;
+    } else {
+      setErrors((pre) => ({ ...pre, email: '' }));
+     isError = false;
+    }
+    
+    if (number === '') {
+      setErrors((pre) => ({ ...pre, number: 'Phone number cannot be empty' }));
+      isError = true;
+    } else if (!/^[0-9]+$/.test(number)) {
+      setErrors((pre) => ({ ...pre, number: 'Phone number must contain only digits' }));
+      isError = true;
+    } else {
+      setErrors((pre) => ({ ...pre, number: '' }));
+     isError = false;
+    }
+    if (service === '') {
+      setErrors((pre) => ({ ...pre, service: 'Please select a valid service' }));
+      isError = true;
+    } else {
+      setErrors((pre) => ({ ...pre, service: '' }));
+     isError = false;
     }
 
-    if(email===''){
-     setErrors((pre)=>({...pre,email:'email is empty'}))
-    }else if(!email.includes('@') || !email.includes('.com')){
-      setErrors((pre)=>({...pre,email:'email is not valid'}))
-    } else{
-      setErrors((pre)=>({...pre,email:''}))
-    }
-
-    if(number === ''){
-      setErrors((pre)=>({...pre,number:'name is empty'}))
-    }else if(!/^[0-9]+$/.test(number)) {
-      setErrors((pre)=>({...pre,number:'number is not valid'}))
+    if(!isError){
+      emailjs
+      .sendForm('service_lbroqpd', 'template_toguptb', form.current, {
+        publicKey: 'cOUfb-HPiV54hZqtm',
+      })
+      .then(
+        () => {
+          console.log('SUCCESS!');
+          setIsLoading(false)
+          toast.success('Message Sent Sussfully')
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+          setIsLoading(false)
+          toast.error('Message Sent Failed')
+        },
+      );
+   
     }else{
-      setErrors((pre)=>({...pre,number:''}))
+      setIsLoading(false)
     }
-    if(service === ''){
-      setErrors((pre)=>({...pre,service:'service is not valid'}))
-    }else{
-      setErrors((pre)=>({...pre,service:''}))
-    }
-
-    console.log(errors)
+    
   }
   return (
     <section className="px-3 lg:px-6 py-24 bg-[#0b1120]" id="contact">
+
       <div className="container">
         <h2 className="text-[32px] text-white sm:text-[36px]  text-center font-bold"><span className="text-primary-h">Contact</span> With Us</h2>
         <div className="grid grid-cols-7 mt-6  gap-8">
-          <form action="" method="post" className="col-span-7 lg:col-span-4 flex flex-col gap-5 bg-[#0f172a] px-8 py-10 rounded shadow-xl" onSubmit={handaleFrom} >
+          <form ref={form} className="col-span-7 lg:col-span-4 flex flex-col gap-5 bg-[#0f172a] px-8 py-10 rounded shadow-xl" onSubmit={handaleFrom} >
             <div className="flex flex-col gap-2 w-full ">
               <label htmlFor="name" className="text-gray-200 text-base " >Enter Your Full Name</label>
-              <input type="text" placeholder="enter full name" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.name!==''?'border-red-500':''}`}  onChange={(e)=>setAuthState({...authState,name:e.target.value})}/>
+              <input type="text" placeholder="enter full name" name="from_name" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.name!==''?'border-red-500':''}`}  onChange={(e)=>setAuthState({...authState,name:e.target.value})}/>
               {errors.name!==''?(
                 <span className="text-red-500 text-sm ">{errors.name}</span>
               ):''}
@@ -67,30 +107,30 @@ const Contact = () => {
             </div>
             <div className="flex flex-col gap-2 w-full ">
               <label htmlFor="name" className="text-gray-200 text-base">Enter Your Email</label>
-              <input type="text" placeholder="enter full email" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.email!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,email:e.target.value})} />
+              <input type="text" placeholder="enter full email" name="from_email" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.email!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,email:e.target.value})} />
               {errors.email!==''?(
                 <span className="text-red-500 text-sm ">{errors.email}</span>
               ):''}
             </div>
             <div className="flex flex-col gap-2 w-full ">
               <label htmlFor="name" className="text-gray-200 text-base  ">Enter Your Phone Number</label>
-              <input type="text" placeholder="enter full your phone number" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.number!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,number:e.target.value})}/>
+              <input type="text" placeholder="enter full your phone number" name="from_number" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.number!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,number:e.target.value})}/>
               {errors.number!==''?(
                 <span className="text-red-500 text-sm ">{errors.number}</span>
               ):''}
             </div>
             <div className="flex flex-col gap-2 w-full ">
               <label htmlFor="name" className="text-gray-200 text-base " >Select Your Service</label>
-              <select name="" id="" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.service!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,service:e.target.value})}>
-                <option name="" id="">Select a Service</option>
+              <select name="from_service" id="" className={`w-full placeholder:text-gray-300 outline-none text-gray-300 bg-[#1e293b] px-4 rounded outline-nonetext-sm py-3 border border-transparent focus:border-primary ${errors.service!==''?'border-red-500':''}`} onChange={(e)=>setAuthState({...authState,service:e.target.value})}>
+                <option name="" id="" value=''>Select a Service</option>
                 <option value="web-design">Web Design</option>
                 <option value="web-development">Web Development</option>
               </select>
               {errors.service!==''?(
-                <span className="text-red-500 text-sm ">{errors.number}</span>
+                <span className="text-red-500 text-sm ">{errors.service}</span>
               ):''}
             </div>
-            <button type="submit" className="bg-primary px-6 rounded-sm inline-block text-white w-fit py-2">Submit</button>
+            <button type="submit" className="bg-primary px-6 rounded-sm inline-block text-white w-fit py-2" disabled={loading}>Submit</button>
           </form>
           <div className="col-span-7 lg:col-span-3 lg:mt-14  ">
             <div className="flex flex-col gap-5">
